@@ -59,10 +59,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    - stitch_pantalla_de_bienvenida/agendamiento_de_cita/screen.png
-    - stitch_pantalla_de_bienvenida/agenda_general/screen.png
-    - stitch_pantalla_de_bienvenida/pantalla_de_bienvenida/screen.png
-    - stitch_pantalla_de_bienvenida/selección_de_servicio/screen.png
+    # Removed missing stitch assets (were referenced but not present in repo).
+    # If you want to include images, add their relative paths here, for example:
+    # - assets/images/my_image.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
