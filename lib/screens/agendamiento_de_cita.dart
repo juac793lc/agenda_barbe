@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../services/push_service.dart';
 
 class AgendamientoDeCitaScreen extends StatefulWidget {
   const AgendamientoDeCitaScreen({Key? key}) : super(key: key);
@@ -149,18 +150,31 @@ class _AgendamientoDeCitaScreenState extends State<AgendamientoDeCitaScreen> {
                             if (s.contains('am') && hour == 12) hour = 0;
                             final time = "${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}";
                             try {
-                              await ApiService.createAppointment(
+                              final created = await ApiService.createAppointment(
                                 name: name,
                                 service: service,
                                 date: date,
                                 time: time,
                               );
-                              // ignore: use_build_context_synchronously
+                              // If running on web, try to request permission and save subscription
+                              try {
+                                final apptId = created['id']?.toString() ?? '';
+                                if (apptId.isNotEmpty) {
+                                  // best-effort: request permission and store subscription
+                                  await PushService.initPushForAppointment(apptId, name: name);
+                                }
+                              } catch (pushErr) {
+                                // don't block UX on push errors
+                                print('push init error: $pushErr');
+                              }
+
+                              // showDialog must be called with a valid context; check mounted
+                              if (!mounted) return;
                               await showDialog(context: context, builder: (_) => _confirmationDialog(context, primary, name, service, s, fecha));
                               // Cerrar la pantalla retornando true para indicar que hubo un cambio
                               if (mounted) Navigator.of(context).pop(true);
                             } catch (e) {
-                              // ignore: use_build_context_synchronously
+                              if (!mounted) return;
                               showDialog(
                                 context: context,
                                 builder: (_) => AlertDialog(

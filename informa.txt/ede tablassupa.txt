@@ -1,0 +1,41 @@
+Tablas y columnas creadas / usadas en Supabase
+
+1) push_subscriptions
+- id
+- user_id
+- endpoint
+- subscription (JSON / jsonb)
+- created_at
+
+2) notification_logs
+- id
+- appointment_id
+- subscription_id
+- sent_at
+- delivered (boolean)
+- response (texto / detalles del error o 'ok')
+
+3) barber_teste (tabla de citas)
+- id
+- created_at
+- name
+- date
+- time
+- service
+- appointment_at (opcional / si se añadió)
+- notification_at (marca cuándo se debe enviar el recordatorio)
+- notification_sent (boolean)
+
+4) services
+- id
+- title
+- description
+- price
+
+Notas:
+- Las columnas listadas arriba reflejan los campos que el backend `baken` lee y/o actualiza (por ejemplo: `notification_at`, `notification_sent`).
+- `push_subscriptions.subscription` se guarda como JSON (contiene endpoint y keys: p256dh, auth).
+- `notification_logs` se usa para registrar intentos de envío (éxitos/errores) y facilita la depuración.
+- Asegúrate de aplicar los índices/constraints que necesites (por ejemplo: índice en `notification_at`, uniqueness en `endpoint` si quieres evitar duplicados).
+
+Si quieres, genero también el SQL exacto para crear estas tablas tal como las usamos (con tipos y constraints). ¿Lo quieres ahora?

@@ -1,0 +1,117 @@
+[
+  {
+    "Tabla": "barber_teste",
+    "Columna": "id",
+    "Tipo de Dato": "bigint"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "created_at",
+    "Tipo de Dato": "timestamp with time zone"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "name",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "date",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "time",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "service",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "appointment_at",
+    "Tipo de Dato": "timestamp with time zone"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "notification_at",
+    "Tipo de Dato": "timestamp with time zone"
+  },
+  {
+    "Tabla": "barber_teste",
+    "Columna": "notification_sent",
+    "Tipo de Dato": "boolean"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "id",
+    "Tipo de Dato": "uuid"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "subscription_id",
+    "Tipo de Dato": "uuid"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "appointment_id",
+    "Tipo de Dato": "bigint"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "status",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "code",
+    "Tipo de Dato": "integer"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "response",
+    "Tipo de Dato": "jsonb"
+  },
+  {
+    "Tabla": "notification_logs",
+    "Columna": "created_at",
+    "Tipo de Dato": "timestamp with time zone"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "id",
+    "Tipo de Dato": "uuid"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "user_id",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "endpoint",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "keys_p256dh",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "keys_auth",
+    "Tipo de Dato": "text"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "metadata",
+    "Tipo de Dato": "jsonb"
+  },
+  {
+    "Tabla": "push_subscriptions",
+    "Columna": "created_at",
+    "Tipo de Dato": "timestamp with time zone"
+  }
+]

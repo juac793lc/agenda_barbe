@@ -58,3 +58,6 @@ baken/barbe.db
 
 # VS Code
 .vscode/
+
+# ignore env files
+*.env

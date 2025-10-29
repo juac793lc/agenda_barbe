@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import '../services/api_service.dart';
+import '../services/user_service.dart';
 
 
 class AgendaGeneralScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _AgendaGeneralScreenState extends State<AgendaGeneralScreen> {
     const cardDark = Color(0xFF1B263B);
     const primary = Color(0xFFD4AF37);
 
-    Widget appointment(String name, String service, String time, {String? avatarUrl}) {
+  Widget appointment(int id, String name, String service, String time, {String? avatarUrl, String? ownerId, String? ownerToken}) {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
@@ -40,12 +41,16 @@ class _AgendaGeneralScreenState extends State<AgendaGeneralScreen> {
         ),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: avatarUrl != null
-                  ? NetworkImage(avatarUrl)
-                  : const NetworkImage('https://ui-avatars.com/api/?name=User'),
-              radius: 28,
-            ),
+            avatarUrl != null
+                ? CircleAvatar(
+                    backgroundImage: NetworkImage(avatarUrl),
+                    radius: 28,
+                  )
+                : const CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.grey,
+                    child: Icon(Icons.person, color: Colors.white, size: 28),
+                  ),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -56,7 +61,45 @@ class _AgendaGeneralScreenState extends State<AgendaGeneralScreen> {
                 ],
               ),
             ),
-            Text(time, style: const TextStyle(color: primary, fontSize: 18, fontWeight: FontWeight.bold)),
+            Column(
+              children: [
+                Text(time, style: const TextStyle(color: primary, fontSize: 18, fontWeight: FontWeight.bold)),
+                // Only show delete button if current user is the owner of the appointment
+                Builder(builder: (context) {
+                  final currentUserId = UserService.currentUserId;
+                  final allowed = ownerId != null && currentUserId != null && ownerId == currentUserId;
+                  if (!allowed) return const SizedBox.shrink();
+                  return IconButton(
+                    onPressed: () async {
+                      // Cancel appointment immediately (no form)
+                      try {
+                        bool ok = false;
+                        // If we have an owner token for this appointment, send it. Otherwise use userId header.
+                        if (ownerToken != null && ownerToken.isNotEmpty) {
+                          ok = await ApiService.deleteAppointment(id.toString(), ownerToken: ownerToken);
+                        } else {
+                          ok = await ApiService.deleteAppointment(id.toString(), userId: currentUserId);
+                        }
+
+                        if (ok) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cancelamento enviado')));
+                          // Refresh the list by re-fetching
+                          setState(() {
+                            _appointmentsFuture = ApiService.getAppointmentsFiltered(when: isHoy ? 'hoy' : 'manana');
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Erro ao cancelar')));
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Erro ao cancelar')));
+                      }
+                    },
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    tooltip: 'Cancelar cita',
+                  );
+                }),
+              ],
+            ),
           ],
         ),
       );
@@ -148,10 +191,13 @@ class _AgendaGeneralScreenState extends State<AgendaGeneralScreen> {
                     itemBuilder: (context, i) {
                       final cita = citas[i];
                       return appointment(
+                        (cita['id'] is int) ? cita['id'] as int : int.tryParse('${cita['id']}') ?? 0,
                         cita['name'] ?? 'Sin nombre',
                         cita['service'] ?? '',
                         cita['time'] ?? '',
                         avatarUrl: null,
+                        ownerId: cita['user_id'] != null ? cita['user_id'].toString() : null,
+                        ownerToken: cita['owner_token'] != null ? cita['owner_token'].toString() : null,
                       );
                     },
                   );
